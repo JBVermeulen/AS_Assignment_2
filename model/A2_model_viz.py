@@ -2,6 +2,7 @@ from mesa.visualization.ModularVisualization import ModularServer
 from ContinuousSpace.SimpleContinuousModule import SimpleCanvas
 from model import BangladeshModel
 from components import Source, Sink, Bridge, Link
+from mesa.visualization.UserParam import Slider
 
 """
 Run simulation with Visualization 
@@ -68,10 +69,21 @@ canvas_height = 400
 
 space = SimpleCanvas(agent_portrayal, canvas_width, canvas_height)
 
-server = ModularServer(BangladeshModel,
-                       [space],
-                       "Transport Model Demo",
-                       {"seed": 1234567})
+model_params = {
+    "seed": 1234567,
+
+    "CatA": Slider("CatA (%)", 25, 0, 100, 1),
+    "CatB": Slider("CatB (%)", 25, 0, 100, 1),
+    "CatC": Slider("CatC (%)", 25, 0, 100, 1),
+    "CatD": Slider("CatD (%)", 25, 0, 100, 1),
+}
+
+server = ModularServer(
+    BangladeshModel,
+    [space],
+    "Transport Model Demo",
+    model_params
+)
 
 # The default port
 server.port = 8521
