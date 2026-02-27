@@ -30,6 +30,28 @@ def set_lat_lon_bound(lat_min, lat_max, lon_min, lon_max, edge_ratio=0.02):
 class BangladeshModel(Model):
     """
     The main (top-level) simulation model
+
+    One tick represents one minute; this can be changed
+    but the distance calculation need to be adapted accordingly
+
+    Class Attributes:
+    -----------------
+    step_time: int
+        step_time = 1 # 1 step is 1 min
+
+    path_ids_dict: defaultdict
+        Key: (origin, destination)
+        Value: the shortest path (Infra component IDs) from an origin to a destination
+
+        Since there is only one road in the Demo, the paths are added with the road info;
+        when there is a more complex network layout, the paths need to be managed differently
+
+    sources: list
+        all sources in the network
+
+    sinks: list
+        all sinks in the network
+
     """
 
     step_time = 1
