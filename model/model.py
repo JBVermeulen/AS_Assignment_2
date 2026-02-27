@@ -4,6 +4,7 @@ from mesa.space import ContinuousSpace
 from components import Source, Sink, SourceSink, Bridge, Link
 import pandas as pd
 from collections import defaultdict
+from pathlib import Path
 
 
 # ---------------------------------------------------------------
@@ -76,7 +77,8 @@ class BangladeshModel(Model):
         generate the simulation model according to the csv file component information
         """
 
-        df = pd.read_csv('../data/n1.csv')
+        data_path = Path(__file__).resolve().parents[1] / "data" / "demo-1.csv"
+        df = pd.read_csv(data_path)
 
         roads = ['N1']
 
