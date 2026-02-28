@@ -64,26 +64,23 @@ class BangladeshModel(Model):
         x_min=0,
         y_min=0,
 
-        # -------------------------------
-        # NIEUWE SLIDERS (toegevoegd)
-        # -------------------------------
-        CatA=25,
-        CatB=25,
-        CatC=25,
-        CatD=25
+        scenario=None,
+        CatA=0,
+        CatB=0,
+        CatC=0,
+        CatD=0
     ):
 
         super().__init__()
+        if scenario is None:
+            scenario = {'CatA': CatA, 'CatB': CatB, 'CatC': CatC, 'CatD': CatD}
 
-        # -------------------------------
-        # SLIDER WAARDES OPSLAAN
-        # -------------------------------
-        self.CatA = CatA
-        self.CatB = CatB
-        self.CatC = CatC
-        self.CatD = CatD
+        # Bridge destruction chances
+        self.cat_a = scenario['CatA']
+        self.cat_b = scenario['CatB']
+        self.cat_c = scenario['CatC']
+        self.cat_d = scenario['CatD']
 
-        # bestaande code hieronder NIET aangepast
         self.schedule = BaseScheduler(self)
         self.running = True
         self.path_ids_dict = defaultdict(lambda: pd.Series())
@@ -99,7 +96,7 @@ class BangladeshModel(Model):
         generate the simulation model according to the csv file component information
         """
 
-        data_path = Path(__file__).resolve().parents[1] / "data" / "demo-1.csv"
+        data_path = Path(__file__).resolve().parents[1] / "data" / "test_data3.csv"
         df = pd.read_csv(data_path)
 
         roads = ['N1']
@@ -151,7 +148,7 @@ class BangladeshModel(Model):
                     self.sinks.append(agent.unique_id)
 
                 elif model_type == 'bridge':
-                    agent = Bridge(row['id'], self, row['length'], row['name'], row['road'])
+                    agent = Bridge(row['id'], self, row['length'], row['name'], row['road'], row['quality'])
 
                 elif model_type == 'link':
                     agent = Link(row['id'], self, row['length'], row['name'], row['road'])
@@ -173,6 +170,13 @@ class BangladeshModel(Model):
             if sink is not source:
                 break
         return self.path_ids_dict[source, sink]
+    
+    # ---------------------------------------------------------------
+    def record_completed_trip(self, vehicle):
+        """
+        Record the completed trip of a vehicle when it arrives at the sink
+        """
+        print(f"Vehicle {vehicle.unique_id} completed its trip. Total delay time: {vehicle.delay_time} minutes.")
 
     # ---------------------------------------------------------------
     def step(self):

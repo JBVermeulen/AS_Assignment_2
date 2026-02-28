@@ -57,11 +57,39 @@ class Bridge(Infra):
         self.condition = condition
 
         # TODO
-        self.delay_time = self.random.randrange(0, 10)
+        self.delay_time = 0
+        self.broken = self.set_broken(self.condition)
         # print(self.delay_time)
 
-    # TODO
+    def set_broken(self):
+        """Determine if the bridge is broken based on its condition and the corresponding probabilities"""
+        broken = False
+        if self.condition == 'A':
+            broken = self.model.cat_a > 0 and self.model.random.randint(1, 100) <= self.model.cat_a
+        elif self.condition == 'B':
+            broken = self.model.cat_b > 0 and self.model.random.randint(1, 100) <= self.model.cat_b
+        elif self.condition == 'C':
+            broken = self.model.cat_c > 0 and self.model.random.randint(1, 100) <= self.model.cat_c
+        elif self.condition == 'D':
+            broken = self.model.cat_d > 0 and self.model.random.randint(1, 100) <= self.model.cat_d
+        return broken
+
     def get_delay_time(self):
+        """
+        Get the delay time caused by this bridge if it is broken on its condition and length
+        """
+        if self.broken:
+            if self.length < 10:
+                self.delay_time = self.model.random.uniform(10,20) # delay time between 10 and 20 minutes for short bridges
+            elif self.length < 50:
+                self.delay_time = self.model.random.uniform(15,60) # delay time between 30 and 60 minutes for long bridges
+            elif self.length < 200:
+                self.delay_time = self.model.random.uniform(45,90) # delay time between 45 and 90 minutes for very long bridges
+            else:
+                self.delay_time = self.model.random.triangular(60, 120, 240) # delay time between 1 and 4 hours for extremely long bridges
+        else:
+            self.delay_time = 0
+
         return self.delay_time
 
 
@@ -86,6 +114,7 @@ class Sink(Infra):
 
     def remove(self, vehicle):
         self.model.schedule.remove(vehicle)
+        self.model.record_completed_trip(vehicle)
         self.vehicle_removed_toggle = not self.vehicle_removed_toggle
         print(str(self) + ' REMOVE ' + str(vehicle))
 
@@ -215,6 +244,9 @@ class Vehicle(Agent):
         self.waiting_time = 0
         self.waited_at = None
         self.removed_at_step = None
+        # variables to track delay time
+        self.delay_time = 0
+
 
     def __str__(self):
         return "Vehicle" + str(self.unique_id) + \
@@ -244,7 +276,7 @@ class Vehicle(Agent):
         """
         To print the vehicle trajectory at each step
         """
-        print(self)
+        # print(self)
 
     def drive(self):
 
@@ -279,6 +311,7 @@ class Vehicle(Agent):
             self.waiting_time = next_infra.get_delay_time()
             if self.waiting_time > 0:
                 # arrive at the bridge and wait
+                self.delay_time += self.waiting_time
                 self.arrive_at_next(next_infra, 0)
                 self.state = Vehicle.State.WAIT
                 return

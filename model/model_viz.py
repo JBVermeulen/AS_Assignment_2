@@ -71,7 +71,6 @@ space = SimpleCanvas(agent_portrayal, canvas_width, canvas_height)
 
 model_params = {
     "seed": 1234567,
-
     "CatA": Slider("CatA (%)", 25, 0, 100, 1),
     "CatB": Slider("CatB (%)", 25, 0, 100, 1),
     "CatC": Slider("CatC (%)", 25, 0, 100, 1),
