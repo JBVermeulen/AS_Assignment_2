@@ -70,8 +70,10 @@ class BangladeshModel(Model):
         CatC=0,
         CatD=0
     ):
+        
+        self._seed = seed
+        super().__init__(seed=seed)
 
-        super().__init__()
         if scenario is None:
             scenario = {'CatA': CatA, 'CatB': CatB, 'CatC': CatC, 'CatD': CatD}
 

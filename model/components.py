@@ -58,7 +58,7 @@ class Bridge(Infra):
 
         # TODO
         self.delay_time = 0
-        self.broken = self.set_broken(self.condition)
+        self.broken = self.set_broken()
         # print(self.delay_time)
 
     def set_broken(self):
