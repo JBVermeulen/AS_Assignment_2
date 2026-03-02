@@ -89,6 +89,7 @@ class BangladeshModel(Model):
         self.space = None
         self.sources = []
         self.sinks = []
+        self.wait_events = []
 
         self.generate_model()
 

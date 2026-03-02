@@ -1,5 +1,5 @@
 from model import BangladeshModel
-
+import pandas as pd
 """
     Run simulation
     Print output at terminal
@@ -48,6 +48,11 @@ def scenario_experiment():
                 
                 for i in range(run_length):
                     sim_model.step()
+                
+                df = pd.DataFrame(sim_model.wait_events)
+                print(df)
+                df.to_csv(f'model_output/model_results_scenario_{key}.csv')
 
 if __name__ == "__main__":
     scenario_experiment()
+
