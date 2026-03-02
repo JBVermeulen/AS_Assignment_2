@@ -314,6 +314,15 @@ class Vehicle(Agent):
                 self.delay_time += self.waiting_time
                 self.arrive_at_next(next_infra, 0)
                 self.state = Vehicle.State.WAIT
+
+                event = {
+                    "truck_id": self.unique_id,
+                    "bridge_id": self.location.unique_id,
+                    "start_time": self.model.schedule.steps,
+                    "end_time": self.model.schedule.steps + self.waiting_time,
+                    "wait_duration": self.waiting_time,
+                }
+                self.model.wait_events.append(event)
                 return
             # else, continue driving
 
