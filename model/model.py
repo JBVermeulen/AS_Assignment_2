@@ -68,10 +68,12 @@ class BangladeshModel(Model):
         CatA=0,
         CatB=0,
         CatC=0,
-        CatD=0
+        CatD=5
     ):
+        
+        self._seed = seed
+        super().__init__(seed=seed)
 
-        super().__init__()
         if scenario is None:
             scenario = {'CatA': CatA, 'CatB': CatB, 'CatC': CatC, 'CatD': CatD}
 
@@ -149,7 +151,7 @@ class BangladeshModel(Model):
                     self.sinks.append(agent.unique_id)
 
                 elif model_type == 'bridge':
-                    agent = Bridge(row['id'], self, row['length'], row['name'], row['road'], row['quality'])
+                    agent = Bridge(row['id'], self, row['length'], row['name'], row['road'], row['condition'])
 
                 elif model_type == 'link':
                     agent = Link(row['id'], self, row['length'], row['name'], row['road'])

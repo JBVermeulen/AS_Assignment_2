@@ -58,7 +58,7 @@ class Bridge(Infra):
 
         # TODO
         self.delay_time = 0
-        self.broken = self.set_broken(self.condition)
+        self.broken = self.set_broken()
         # print(self.delay_time)
 
     def set_broken(self):
@@ -220,8 +220,8 @@ class Vehicle(Agent):
 
     """
 
-    # 50 km/h translated into meter per min
-    speed = 50 * 1000 / 60
+    # 48 km/h translated into meter per min
+    speed = 48 * 1000 / 60
     # One tick represents 1 minute
     step_time = 1
 
