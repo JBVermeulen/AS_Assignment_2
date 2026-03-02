@@ -1,5 +1,9 @@
 import pandas as pd
 
+
+# Below follows the cleaning pipeline to get the correct dataset for further modelling
+
+
 def load_data(bridges_path: str, roads_path: str):
     """Load bridges (Excel) and roads (CSV) datasets."""
     bridges = pd.read_excel(bridges_path)
