@@ -1,5 +1,5 @@
 from model import BangladeshModel
-
+import pandas as pd
 """
     Run simulation
     Print output at terminal
@@ -23,3 +23,10 @@ print("SEED " + str(sim_model._seed))
 # One run with given steps
 for i in range(run_length):
     sim_model.step()
+
+#----------------------------------------------------------
+#model_output to csv
+
+df = pd.DataFrame(sim_model.wait_events)
+print(df)
+df.to_csv('model_output/model_results_scenario_boeie.csv')
