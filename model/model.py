@@ -65,10 +65,10 @@ class BangladeshModel(Model):
         y_min=0,
 
         scenario=None,
-        CatA=0,
-        CatB=0,
-        CatC=0,
-        CatD=5
+        CatA=10,
+        CatB=20,
+        CatC=30,
+        CatD=40
     ):
         
         self._seed = seed
@@ -99,7 +99,7 @@ class BangladeshModel(Model):
         generate the simulation model according to the csv file component information
         """
 
-        data_path = Path(__file__).resolve().parents[1] / "data" / "test_data3.csv"
+        data_path = Path(__file__).resolve().parents[1] / "data" / "N1_AS2.csv"
         df = pd.read_csv(data_path)
 
         roads = ['N1']
