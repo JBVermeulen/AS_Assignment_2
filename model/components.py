@@ -318,6 +318,8 @@ class Vehicle(Agent):
                 event = {
                     "truck_id": self.unique_id,
                     "bridge_id": self.location.unique_id,
+                    "bridge_condition": self.location.condition,
+                    "bridge_length": self.location.length,
                     "start_time": self.model.schedule.steps,
                     "end_time": self.model.schedule.steps + self.waiting_time,
                     "wait_duration": self.waiting_time,
