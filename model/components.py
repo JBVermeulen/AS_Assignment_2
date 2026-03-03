@@ -1,6 +1,6 @@
 from mesa import Agent
 from enum import Enum
-
+DEBUG = False
 
 # ---------------------------------------------------------------
 class Infra(Agent):
@@ -51,10 +51,12 @@ class Bridge(Infra):
     """
 
     def __init__(self, unique_id, model, length=0,
-                 name='Unknown', road_name='Unknown', condition='Unknown'):
+                 name='Unknown', road_name='Unknown', condition='Unknown', lat=0, lon=0):
         super().__init__(unique_id, model, length, name, road_name)
 
         self.condition = condition
+        self.lat = lat
+        self.lon = lon
 
         # TODO
         self.delay_time = 0
@@ -296,7 +298,6 @@ class Vehicle(Agent):
         """
         vehicle shall move to the next object with the given distance
         """
-
         self.location_index += 1
         next_id = self.path_ids[self.location_index]
         next_infra = self.model.schedule._agents[next_id]  # Access to protected member _agents
@@ -308,7 +309,45 @@ class Vehicle(Agent):
             self.location.remove(self)
             return
         elif isinstance(next_infra, Bridge):
-            self.waiting_time = next_infra.get_delay_time()
+            # if next object is also a bridge, check if it has the same length as the current one.
+            if DEBUG:
+                print(f"Vehicle {self.unique_id} arrives at bridge {next_infra.unique_id} with condition {next_infra.condition} and length {next_infra.length}.")
+            alternative_bridges = [next_infra]
+            while self.location_index + 1 < len(self.path_ids):
+                next_infra_neighbor = self.model.schedule._agents[self.path_ids[self.location_index + 1]]
+                # if isinstance(next_infra_neighbor, Bridge) and next_infra_neighbor.length == next_infra.length:
+                if isinstance(next_infra_neighbor, Bridge) and self.bridges_are_interchangeable(next_infra, next_infra_neighbor, tolerance=0.00005):
+                    # if the next bridge has the same length, we can skip the waiting time of the current bridge
+                    if DEBUG:
+                        print(f"Vehicle {self.unique_id} also arrives at bridge {next_infra_neighbor.unique_id} with condition {next_infra_neighbor.condition} and length {next_infra_neighbor.length}.")
+                    alternative_bridges.append(next_infra_neighbor)
+                    self.location_index += 1
+                    next_infra = next_infra_neighbor
+                else:
+                    break
+            # if bridges all have the same condition, chose one, otherwise chose the one which is not broken
+            best_brige = alternative_bridges[0]
+            best_delay = best_brige.get_delay_time()
+            best_time = best_delay + best_brige.length / Vehicle.speed * Vehicle.step_time
+            if DEBUG:
+                print(f"Vehicle {self.unique_id} checks bridge {best_brige.unique_id} with condition {best_brige.condition} and length {best_brige.length}. Delay time: {best_delay} minutes. Total time: {best_time} minutes.")
+            for bridge in alternative_bridges[1:]:
+                delay = bridge.get_delay_time()
+                time = delay + bridge.length / Vehicle.speed * Vehicle.step_time
+
+                if DEBUG:
+                    print(f"Vehicle {self.unique_id} checks bridge {bridge.unique_id} with condition {bridge.condition} and length {bridge.length}. Delay time: {delay} minutes. Total time: {time} minutes.")
+                if time < best_time:
+                    best_brige = bridge
+                    best_delay = delay
+                    best_time = time
+            if DEBUG:
+                print(f"Vehicle {self.unique_id} chooses bridge {best_brige.unique_id} with condition {best_brige.condition} and length {best_brige.length}. Delay time: {best_delay} minutes. Total time: {best_time} minutes.")
+            self.waiting_time = best_delay
+            next_infra = best_brige
+            if DEBUG and self.waiting_time > 0:
+                print(f"Vehicle {self.unique_id} has to wait for {self.waiting_time} minutes at bridge {next_infra.unique_id} with condition {next_infra.condition} and length {next_infra.length}. Total time: {best_time} minutes.")
+            
             if self.waiting_time > 0:
                 # arrive at the bridge and wait
                 self.delay_time += self.waiting_time
@@ -343,6 +382,12 @@ class Vehicle(Agent):
         self.location = next_infra
         self.location_offset = location_offset
         self.location.vehicle_count += 1
+
+    def bridges_are_interchangeable(self, bridge1, bridge2, tolerance=0.00005):
+        """
+        Check if two bridges are interchangeable for the vehicle, which means they are appriximately at the same location and thus both go to the same destination point.
+        """
+        return abs(bridge1.lat - bridge2.lat) < tolerance and abs(bridge1.lon - bridge2.lon) < tolerance
 
 # EOF -----------------------------------------------------------
 
