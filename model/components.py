@@ -325,7 +325,7 @@ class Vehicle(Agent):
                     next_infra = next_infra_neighbor
                 else:
                     break
-            # if bridges all have the same condition, chose one, otherwise chose the one which is not broken
+            # if bridges all have the same condition, choose one, otherwise chose the one which is not broken
             best_brige = alternative_bridges[0]
             best_delay = best_brige.get_delay_time()
             best_time = best_delay + best_brige.length / Vehicle.speed * Vehicle.step_time
