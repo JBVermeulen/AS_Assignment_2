@@ -65,17 +65,20 @@ class BangladeshModel(Model):
         y_min=0,
 
         scenario=None,
-        CatA=10,
-        CatB=20,
-        CatC=30,
-        CatD=40
+        
+        # slider values for visualization
+        slider_cat_a=10,
+        slider_cat_b=20,
+        slider_cat_c=30,
+        slider_cat_d=40
     ):
         
         self._seed = seed
         super().__init__(seed=seed)
 
+        # If scenario is not provided, use the slider values for bridge destruction chances; otherwise, use the scenario values
         if scenario is None:
-            scenario = {'CatA': CatA, 'CatB': CatB, 'CatC': CatC, 'CatD': CatD}
+            scenario = {'CatA': slider_cat_a, 'CatB': slider_cat_b, 'CatC': slider_cat_c, 'CatD': slider_cat_d}
 
         # Bridge destruction chances
         self.cat_a = scenario['CatA']
