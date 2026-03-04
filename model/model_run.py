@@ -1,32 +1,31 @@
-from model import BangladeshModel
 import pandas as pd
-"""
-    Run simulation
-    Print output at terminal
-"""
+
+from model import BangladeshModel
+
+SINGLE_RUN = True # Set to False to run the scenario experiment
 
 # ---------------------------------------------------------------
+def single_run():
+    """Run a single scenario with a given seed and print output at terminal"""
+    # run time 5 x 24 hours; 1 tick 1 minute
+    run_length = 5 * 24 * 60
 
-# run time 5 x 24 hours; 1 tick 1 minute
-# run_length = 5 * 24 * 60
+    # run time 1000 ticks
+    # run_length = 1000
 
-# run time 1000 ticks
-# run_length = 1000
-#
-# seed = 1234567
-#
-# sim_model = BangladeshModel(seed=seed)
-#
-# # Check if the seed is set
-# print("SEED " + str(sim_model._seed))
-#
-# # One run with given steps
-# for i in range(run_length):
-#     sim_model.step()
-#
-# df = pd.DataFrame(sim_model.wait_events)
-# print(df)
-# df.to_csv(f'model_output/model_results_scenario_.csv')
+    seed = 1234567
+
+    sim_model = BangladeshModel(seed=seed)
+
+    # Check if the seed is set
+    print("SEED " + str(sim_model._seed))
+
+    # One run with given steps
+    for i in range(run_length):
+        sim_model.step()
+
+    df = pd.DataFrame(sim_model.wait_events)
+    df.to_csv('model_output/model_results.csv')
 
 def scenario_experiment():
     """Run multiple scenarios with different seeds and print output at terminal"""
@@ -44,21 +43,24 @@ def scenario_experiment():
     }
 
     for key, value in scenarios.items():
-            list_of_runs = []
-            for seed_var in range(1, 11):
-                seed = 123 + seed_var  # Different seed for each scenario
-                print(f"Running scenario {key} with seed {seed}.")
-                sim_model = BangladeshModel(seed=seed, scenario=value)
+        list_of_runs = []
+        for seed_var in range(1, 11):
+            seed = 123 + seed_var  # Different seed for each scenario
+            print(f"Running scenario {key} with seed {seed}.")
+            sim_model = BangladeshModel(seed=seed, scenario=value)
 
-                for i in range(run_length):
-                    sim_model.step()
+            for i in range(run_length):
+                sim_model.step()
 
-                df = pd.DataFrame(sim_model.wait_events)
-                df['seed'] = seed_var
-                list_of_runs.append(df)
-            full_df = pd.concat(list_of_runs,ignore_index=True)
-            full_df.to_csv(f'model_output/model_results_scenario_{key}.csv')
+            df = pd.DataFrame(sim_model.wait_events)
+            df['seed'] = seed_var
+            list_of_runs.append(df)
+
+        full_df = pd.concat(list_of_runs,ignore_index=True)
+        full_df.to_csv(f'model_output/model_results_scenario_{key}.csv')
 
 if __name__ == "__main__":
-    scenario_experiment()
-
+    if SINGLE_RUN:
+        single_run()
+    else:
+        scenario_experiment()
