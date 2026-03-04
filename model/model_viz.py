@@ -71,10 +71,10 @@ space = SimpleCanvas(agent_portrayal, canvas_width, canvas_height)
 
 model_params = {
     "seed": 1234567,
-    "CatA": Slider("CatA (%)", 25, 0, 100, 1),
-    "CatB": Slider("CatB (%)", 25, 0, 100, 1),
-    "CatC": Slider("CatC (%)", 25, 0, 100, 1),
-    "CatD": Slider("CatD (%)", 25, 0, 100, 1),
+    "slider_cat_a": Slider("CatA (%)", 25, 0, 100, 1),
+    "slider_cat_b": Slider("CatB (%)", 25, 0, 100, 1),
+    "slider_cat_c": Slider("CatC (%)", 25, 0, 100, 1),
+    "slider_cat_d": Slider("CatD (%)", 25, 0, 100, 1),
 }
 
 server = ModularServer(
