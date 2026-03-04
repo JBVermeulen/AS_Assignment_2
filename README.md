@@ -17,7 +17,7 @@ distributions. Data preparation involved merging road and bridge datasets for ro
 data into CSV format.
 
 This data is used in the model to simulate truck traffic generated at five-minute intervals. This is done to analyze
-how various bridge qualities affect the network and how failures impact average travel times.
+how various bridge qualities affect the network and how failures impact average travel and wait times.
 
 
 ## How to Use
