@@ -45,7 +45,6 @@ def scenario_experiment():
 
     for key, value in scenarios.items():
             list_of_runs_wait_events = []
-            list_of_runs_travel_time = []
             for seed_var in range(1, 11):
                 seed = 123 + seed_var  # Different seed for each scenario
                 print(f"Running scenario {key} with seed {seed}.")
@@ -57,13 +56,9 @@ def scenario_experiment():
                 df_wait_events = pd.DataFrame(sim_model.wait_events)
                 df_wait_events['seed'] = seed
                 list_of_runs_wait_events.append(df_wait_events)
-                df_travel_time = pd.DataFrame(sim_model.trip_information)
-                df_travel_time['seed'] = seed
-                list_of_runs_travel_time.append(df_travel_time)
             full_df_wait_events = pd.concat(list_of_runs_wait_events,ignore_index=True)
-            full_df_wait_events.to_csv(f'Experiment/wait_event_results_scenario_{key}.csv')
-            full_df_travel_time = pd.concat(list_of_runs_travel_time)
-            full_df_travel_time.to_csv(f'Experiment/travel_time_results_scenario{key}.csv')
+            full_df_wait_events.to_csv(f'../experiment/scenario{key}.csv')
+
 
 if __name__ == "__main__":
     scenario_experiment()
