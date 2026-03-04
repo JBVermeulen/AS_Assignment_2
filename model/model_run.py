@@ -1,9 +1,10 @@
-from model import BangladeshModel
 import pandas as pd
+from pathlib import Path
 
 from model import BangladeshModel
 
-SINGLE_RUN = True # Set to False to run the scenario experiment
+SINGLE_RUN = False # Set to False to run the scenario experiment
+EXPERIMENT_PATH =Path(__file__).resolve().parents[1] / "experiment"
 
 # ---------------------------------------------------------------
 def single_run():
@@ -38,7 +39,7 @@ def single_run():
         sim_model.step()
 
     df = pd.DataFrame(sim_model.wait_events)
-    df.to_csv('../experiment/scenario_none.csv')
+    df.to_csv(EXPERIMENT_PATH / 'scenario_none.csv')
 
 def scenario_experiment():
     """Run multiple scenarios with different seeds and print output at terminal"""
@@ -57,31 +58,27 @@ def scenario_experiment():
     }
 
     for key, value in scenarios.items():
+        print(key)
+        print(value)
         list_of_runs_wait_events = []
-        list_of_runs_travel_time = []
+
         for seed_var in range(1, 11):
             seed = 123 + seed_var  # Different seed for each scenario
             print(f"Running scenario {key} with seed {seed}.")
             sim_model = BangladeshModel(seed=seed, scenario=value)
-            list_of_runs_wait_events = []
-            for seed_var in range(1, 11):
-                seed = 123 + seed_var  # Different seed for each scenario
-                print(f"Running scenario {key} with seed {seed}.")
-                sim_model = BangladeshModel(seed=seed, scenario=value)
 
-        for i in range(run_length):
-            sim_model.step()
+            for i in range(run_length):
+                sim_model.step()
 
-        df_wait_events = pd.DataFrame(sim_model.wait_events)
-        df_wait_events['seed'] = seed
-        list_of_runs_wait_events.append(df_wait_events)
+            df_wait_events = pd.DataFrame(sim_model.wait_events)
+            df_wait_events['seed'] = seed
+            list_of_runs_wait_events.append(df_wait_events)
 
-    full_df_wait_events = pd.concat(list_of_runs_wait_events,ignore_index=True)
-    full_df_wait_events.to_csv(f'../experiment/scenario{key}.csv')
+        full_df_wait_events = pd.concat(list_of_runs_wait_events,ignore_index=True)
+        full_df_wait_events.to_csv(EXPERIMENT_PATH / f'scenario{key}.csv')
 
 if __name__ == "__main__":
     if SINGLE_RUN:
         single_run()
     else:
         scenario_experiment()
-

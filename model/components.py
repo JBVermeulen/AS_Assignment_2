@@ -132,7 +132,7 @@ class Sink(Infra):
         self.model.schedule.remove(vehicle)
         self.model.record_completed_trip(vehicle)
         self.vehicle_removed_toggle = not self.vehicle_removed_toggle
-        print(str(self) + ' REMOVE ' + str(vehicle))
+        # print(str(self) + ' REMOVE ' + str(vehicle))
 
 
 # ---------------------------------------------------------------
@@ -179,7 +179,7 @@ class Source(Infra):
                 Source.truck_counter += 1
                 self.vehicle_count += 1
                 self.vehicle_generated_flag = True
-                print(str(self) + " GENERATE " + str(agent))
+                # print(str(self) + " GENERATE " + str(agent))
         except Exception as e:
             print("Oops!", e.__class__, "occurred.")
 
