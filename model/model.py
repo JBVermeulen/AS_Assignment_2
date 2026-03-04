@@ -90,6 +90,7 @@ class BangladeshModel(Model):
         self.sources = []
         self.sinks = []
         self.wait_events = []
+        self.trip_information = []
 
         self.generate_model()
 
@@ -179,7 +180,10 @@ class BangladeshModel(Model):
         """
         Record the completed trip of a vehicle when it arrives at the sink
         """
-        print(f"Vehicle {vehicle.unique_id} completed its trip. Total delay time: {vehicle.delay_time} minutes.")
+        travel_time = vehicle.removed_at_step - vehicle.generated_at_step
+        finished_trip = {'Vehicle ID': vehicle.unique_id, 'Travel Time': travel_time, 'Total Delay': vehicle.delay_time}
+        self.trip_information.append(finished_trip)
+
 
     # ---------------------------------------------------------------
     def step(self):
