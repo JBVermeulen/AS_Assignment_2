@@ -43,10 +43,19 @@ class Bridge(Infra):
     __________
     condition:
         condition of the bridge
+    
+    lat: float
+        latitude of the bridge location
+    
+    lon: float
+        longitude of the bridge location
 
     delay_time: int
         the delay (in ticks) caused by this bridge
-    ...
+    
+    broken: bool
+        whether the bridge is broken or not set at the initialization
+        of the bridge based on its condition and the corresponding probabilities
 
     """
 
@@ -58,13 +67,14 @@ class Bridge(Infra):
         self.lat = lat
         self.lon = lon
 
-        # TODO
         self.delay_time = 0
         self.broken = self.set_broken()
         # print(self.delay_time)
 
     def set_broken(self):
-        """Determine if the bridge is broken based on its condition and the corresponding probabilities"""
+        """
+        Determine if the bridge is broken based on its condition and the corresponding probabilities
+        """
         broken = False
         if self.condition == 'A':
             broken = self.model.cat_a > 0 and self.model.random.randint(1, 100) <= self.model.cat_a
@@ -82,13 +92,17 @@ class Bridge(Infra):
         """
         if self.broken:
             if self.length < 10:
-                self.delay_time = self.model.random.uniform(10,20) # delay time between 10 and 20 minutes for short bridges
+                # delay time between 10 and 20 minutes for short bridges
+                self.delay_time = self.model.random.uniform(10,20)
             elif self.length < 50:
-                self.delay_time = self.model.random.uniform(15,60) # delay time between 30 and 60 minutes for long bridges
+                # delay time between 15 and 60 minutes for long bridges
+                self.delay_time = self.model.random.uniform(15,60)
             elif self.length < 200:
-                self.delay_time = self.model.random.uniform(45,90) # delay time between 45 and 90 minutes for very long bridges
+                # delay time between 45 and 90 minutes for very long bridges
+                self.delay_time = self.model.random.uniform(45,90)
             else:
-                self.delay_time = self.model.random.triangular(60, 120, 240) # delay time between 1 and 4 hours for extremely long bridges
+                # delay time between 1 and 4 hours for extremely long bridges
+                self.delay_time = self.model.random.triangular(60, 120, 240)
         else:
             self.delay_time = 0
 
@@ -218,7 +232,9 @@ class Vehicle(Agent):
 
     removed_at_step: int
         the timestamp (number of ticks) that the vehicle is removed
-    ...
+    
+    delay_time: int
+        the total delay time caused by broken bridges during the trip
 
     """
 
@@ -325,12 +341,15 @@ class Vehicle(Agent):
                     next_infra = next_infra_neighbor
                 else:
                     break
-            # if bridges all have the same condition, choose one, otherwise chose the one which is not broken
+
+            # Choose the best bridge with the shortest total time (delay time + driving time)
             best_brige = alternative_bridges[0]
             best_delay = best_brige.get_delay_time()
             best_time = best_delay + best_brige.length / Vehicle.speed * Vehicle.step_time
+
             if DEBUG:
                 print(f"Vehicle {self.unique_id} checks bridge {best_brige.unique_id} with condition {best_brige.condition} and length {best_brige.length}. Delay time: {best_delay} minutes. Total time: {best_time} minutes.")
+
             for bridge in alternative_bridges[1:]:
                 delay = bridge.get_delay_time()
                 time = delay + bridge.length / Vehicle.speed * Vehicle.step_time
@@ -341,13 +360,16 @@ class Vehicle(Agent):
                     best_brige = bridge
                     best_delay = delay
                     best_time = time
+
             if DEBUG:
                 print(f"Vehicle {self.unique_id} chooses bridge {best_brige.unique_id} with condition {best_brige.condition} and length {best_brige.length}. Delay time: {best_delay} minutes. Total time: {best_time} minutes.")
+
             self.waiting_time = best_delay
             next_infra = best_brige
+
             if DEBUG and self.waiting_time > 0:
                 print(f"Vehicle {self.unique_id} has to wait for {self.waiting_time} minutes at bridge {next_infra.unique_id} with condition {next_infra.condition} and length {next_infra.length}. Total time: {best_time} minutes.")
-            
+
             if self.waiting_time > 0:
                 # arrive at the bridge and wait
                 self.delay_time += self.waiting_time
@@ -385,10 +407,12 @@ class Vehicle(Agent):
 
     def bridges_are_interchangeable(self, bridge1, bridge2, tolerance=0.00005):
         """
-        Check if two bridges are interchangeable for the vehicle, which means they are appriximately at the same location and thus both go to the same destination point.
+        Check if two bridges are interchangeable for the vehicle, 
+        which means they are appriximately at the same location 
+        and thus both go to the same destination point.
         """
-        return abs(bridge1.lat - bridge2.lat) < tolerance and abs(bridge1.lon - bridge2.lon) < tolerance
+        bridge_lat_diff = abs(bridge1.lat - bridge2.lat)
+        bridge_lon_diff = abs(bridge1.lon - bridge2.lon)
+        return bridge_lat_diff < tolerance and bridge_lon_diff < tolerance
 
 # EOF -----------------------------------------------------------
-
-
