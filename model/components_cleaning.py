@@ -1,8 +1,8 @@
 import pandas as pd
 
+from pathlib import Path
 
 # Below follows the cleaning pipeline to get the correct dataset for further modelling
-
 
 def load_data(bridges_path: str, roads_path: str):
     """Load bridges (Excel) and roads (CSV) datasets."""
@@ -133,6 +133,12 @@ def process_road_network(bridges_path, roads_path, road_name="N1"):
 
     return full
 
-full_N1 = process_road_network("../data/raw/BMMS_overview.xlsx", "../data/raw/_roads3.csv", "N1")
-full_N1.to_csv("../data/N1_AS2.csv", index=False)
+data_path = Path(__file__).resolve().parents[1] / "data"
 
+full_N1 = process_road_network(
+    data_path / "raw" / "BMMS_overview.xlsx",
+    data_path / "raw" / "_roads3.csv",
+    "N1"
+)
+
+full_N1.to_csv(data_path / "processed" / "N1_AS2.csv", index=False)

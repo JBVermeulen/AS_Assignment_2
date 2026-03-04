@@ -31,16 +31,21 @@ pip install -r requirements.txt
 ```
 
 ### Running
-Run the model from `model/model_run.py` (from the project root):
+To generate a cleaned dataset, run the cleaning algorithm:
+```bash
+python model/components_cleaning.py
+```
+This generates `data/processed/N1_AS2.csv` — a prepared version is already available.
 
+Run the model from `model/model_run.py` (from the project root):
 ```bash
 python model/model_run.py
 ```
 
 - Set `SINGLE_RUN = True` to run one simulation.
-- Output is printed saved to `experiment/model_results.csv`.
+    - Output is saved to `experiment/scenario_none.csv`.
 - Set `SINGLE_RUN = False` to run the full scenario analysis (Scenarios 0-8, 10 replications each).
-- Output is saved to `experiment/scenario0.csv` through `scenario8.csv`.
+    - Output is saved to `experiment/scenario0.csv` through `scenario8.csv`.
 
 To visualize the model, run `model/model_viz.py`.
 This runs a single simulation with adjustable bridge breakdown probabilities.
@@ -83,9 +88,3 @@ EPA133a-G11-A2/
 ├─ requirements.txt                       # Python dependencies
 └─ README.md                              # Project documentation
 ```
-
-### Format
-
-Most README files for data or software projects are now written in Markdown format, like this document. There are some different flavours, but they are easy to write. See here for more information https://www.markdownguide.org/basic-syntax
-
-Most IDEs can render Markdown files directly.

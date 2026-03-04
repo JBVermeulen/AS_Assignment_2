@@ -103,7 +103,7 @@ class BangladeshModel(Model):
         generate the simulation model according to the csv file component information
         """
 
-        data_path = Path(__file__).resolve().parents[1] / "data" / "N1_AS2.csv"
+        data_path = Path(__file__).resolve().parents[1] / "data" / "processed" / "N1_AS2.csv"
         df = pd.read_csv(data_path)
 
         roads = ['N1']
