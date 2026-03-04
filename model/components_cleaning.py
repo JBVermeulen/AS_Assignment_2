@@ -133,6 +133,6 @@ def process_road_network(bridges_path, roads_path, road_name="N1"):
 
     return full
 
-full_N1 = process_road_network("../data/BMMS_overview.xlsx", "../data/_roads3.csv", "N1")
+full_N1 = process_road_network("../data/raw/BMMS_overview.xlsx", "../data/raw/_roads3.csv", "N1")
 full_N1.to_csv("../data/N1_AS2.csv", index=False)
 
