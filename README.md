@@ -1,11 +1,14 @@
-# Example README File
+# README File
 
-Created by: EPA133a Group xx
+Created by: EPA133a Group 11
 
 |    Name     | Student Number |
 | :---------: | :------------- |
-| Scipio Bruijn  | 5868181        |
-| David Brown | 7654321        |
+| Annette Dorresteijn | 5868629 |
+| Evi de Kok | 5878179 |
+| Jonathan Vermeulen | 5144434 |
+| Scipio Bruijn  | 5868181 |
+| Stijn Keukens | 5072700 |
 
 ## Introduction
 
@@ -15,7 +18,28 @@ If you are looking for information about the Demo model of Assignment 2, navigat
 
 ## How to Use
 
-Include whatever you think is necessary for someone to understand your work. The README file is usually the first file someone will see and open. It doesn't need to explain what might be obvious, but it should point out the most important things for someone looking at your work. For example, how to launch your program, what are the main files, where to find them, etc.
+### Project Preparation
+1. Create and activate a virtual environment (`conda` or `venv`).
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Running
+Run the model from `model/model_run.py` (from the project root):
+
+```bash
+python model/model_run.py
+```
+
+- Set `SINGLE_RUN = True` to run one simulation.
+- Output is printed saved to `experiment/model_results.csv`.
+- Set `SINGLE_RUN = False` to run the full scenario analysis (Scenarios 0-8, 10 replications each).
+- Output is saved to `experiment/scenario0.csv` through `scenario8.csv`.
+
+To visualize the model, run `model/model_viz.py`.
+This runs a single simulation with adjustable bridge breakdown probabilities.
 
 ### Format
 
